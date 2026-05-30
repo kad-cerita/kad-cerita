@@ -441,7 +441,7 @@ const db=firebase.database();
 const MY_ID=localStorage.getItem('myUserId')||'u_'+Math.random().toString(36).substr(2,9);
 localStorage.setItem('myUserId',MY_ID);
 
-let currentFilter='Semua',hasAutoScrolled=false,isAdmin=sessionStorage.getItem('isAdmin')==='true',editTargetId=null,selectedAvatarUrl=MALE_AVATARS[0];
+let currentFilter='Semua',hasAutoScrolled=false,isAdmin=sessionStorage.getItem('isAdmin')==='true',editTargetId=null,selectedAvatarUrl=MALE_AVATARS[0],postDataMap={};
 
 // ── Admin login via triple-tap on hero/logo ──
 let heroTapCount=0,heroTapTimer=null;
@@ -566,6 +566,7 @@ function loadPosts(){
     const catIcons={"Cerita & Luahan":"📖","Petikan Semangat":"🔥","Pendapat Fikiran":"💡","Umum & Lain-Lain":"🌐"};
     let filtered=currentFilter==='Semua'?data:data.filter(p=>p.category===currentFilter);
     filtered.sort((a,b)=>b.time-a.time).forEach(p=>{
+      postDataMap[p.key]=p;
       const div=document.createElement("div");div.className="feed-card";div.id=`card_${p.key}`;div.setAttribute('data-cat',p.category);
       const lastRead=parseInt(localStorage.getItem('read_'+p.key)||"0");
       const hasNew=(p.replyCount||0)>lastRead;
@@ -579,7 +580,7 @@ function loadPosts(){
         <div class="user-row">
           <img src="${p.avatar}" class="avatar" alt="${p.name}">
           <div class="user-info"><b>${p.name}</b><small>${fDate} • ${fTime}</small></div>
-          ${canManage?`<div class="post-options"><button class="btn-options" onclick="toggleDropdown(event,'${p.key}')">⋮</button><div id="drop_${p.key}" class="dropdown-menu"><button class="btn-edit" onclick="startEdit('${p.key}','${p.text.replace(/'/g,"\\'").replace(/\n/g,"\\n")}','${p.category}','${p.name}')">✏️ Edit Kad</button><button class="btn-delete" onclick="deletePost('${p.key}')">🗑️ Padam</button></div></div>`:''}
+          ${canManage?`<div class="post-options"><button class="btn-options" onclick="toggleDropdown(event,'${p.key}')">⋮</button><div id="drop_${p.key}" class="dropdown-menu"><button class="btn-edit" data-key="${p.key}" onclick="handleEdit(event)">✏️ Edit Kad</button><button class="btn-delete" data-key="${p.key}" onclick="handleDelete(event)">🗑️ Padam</button></div></div>`:''}
         </div>
         <div class="post-text">${p.text}</div>
         <div class="actions">
@@ -609,17 +610,29 @@ function loadPosts(){
 
 function toggleDropdown(e,key){e.stopPropagation();document.querySelectorAll('.dropdown-menu').forEach(d=>{if(d.id!=='drop_'+key)d.style.display='none';});const drop=document.getElementById('drop_'+key);drop.style.display=drop.style.display==='block'?'none':'block';}
 function closeAllDropdowns(e){document.querySelectorAll('.dropdown-menu').forEach(d=>d.style.display='none');closeAvatarDropdown();}
-function startEdit(key,text,cat,name){
+function handleEdit(e){
+  e.stopPropagation();
+  const key=e.currentTarget.getAttribute('data-key');
+  const p=postDataMap[key];
+  if(!p)return;
+  closeAllDropdowns();
   editTargetId=key;
   openFormModal();
   setTimeout(()=>{
-    document.getElementById("message").value=text.replace(/\\n/g,'\n');
-    document.getElementById("category").value=cat;
-    document.getElementById("nickname").value=name;
+    document.getElementById("message").value=p.text||'';
+    document.getElementById("category").value=p.category||'Cerita & Luahan';
+    document.getElementById("nickname").value=p.name||'';
     document.getElementById("btnSubmitMain").innerText="Kemaskini Kad ✦";
-    document.getElementById("charCount").innerText=text.length+" / 500";
+    document.getElementById("charCount").innerText=(p.text||'').length+" / 500";
+    if(p.avatar){selectedAvatarUrl=p.avatar;document.getElementById('avatarPreviewImg').src=p.avatar;document.getElementById('avatarPreviewLabel').textContent='Avatar Dipilih';}
   },50);
   showToast("✍️ Anda sedang mengedit kad...");
+}
+function handleDelete(e){
+  e.stopPropagation();
+  const key=e.currentTarget.getAttribute('data-key');
+  closeAllDropdowns();
+  if(confirm("Padam post ini secara kekal?"))db.ref("posts/"+key).remove();
 }
 function toggleReaction(k,t){const sk=`react_${t}_${k}`,has=localStorage.getItem(sk);db.ref(`posts/${k}/${t}`).transaction(v=>has?Math.max(0,(v||1)-1):(v||0)+1);has?localStorage.removeItem(sk):localStorage.setItem(sk,'true');}
 function toggleReply(k,c){const s=document.getElementById(`replySection_${k}`),isOpen=s.style.display==="block";s.style.display=isOpen?"none":"block";if(!isOpen)localStorage.setItem('read_'+k,c);}
@@ -638,6 +651,7 @@ function openShare(key,name,text){
 }
 function closeModal(){document.getElementById("shareModal").style.display="none";}
 function deletePost(k){if(confirm("Padam post ini secara kekal?"))db.ref("posts/"+k).remove();}
+function startEdit(){} // legacy stub
 
 // ── SIMPAN KAD SEBAGAI IMEJ (Canvas) ──
 function saveKadAsImage(key, name, text, category, avatarUrl, time) {
