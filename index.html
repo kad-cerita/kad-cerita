@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kad Cerita | Platform Bercerita sebagai Anonim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body onclick="closeAllDropdowns(event)">
+
+<!-- ═══════════════════════════════════════ -->
+<!-- HEADER -->
+<!-- ═══════════════════════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-brand" onclick="adminLoginTrigger()">
+      <div class="brand-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="brand-name">Kad Cerita</span>
+    </div>
+
+    <div class="header-coffee">
+      <div class="coffee-wrap" id="coffeeWrap">
+        <div class="coffee-mug">
+          <div class="mug-body">☕</div>
+          <div class="steam s1"></div>
+          <div class="steam s2"></div>
+          <div class="steam s3"></div>
+        </div>
+        <div class="coffee-bubble" id="coffeeBubble">
+          <span>Anda ada masalah ini?</span>
+          <div class="bubble-arrow"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- HERO SECTION -->
+<!-- ═══════════════════════════════════════ -->
+<section class="hero-section">
+  <div class="wrapper">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="hero-badge">Platform Bercerita Anonim</div>
+        <h1 class="hero-title">Cerita Anda,<br><span class="hero-accent">Suara Anda.</span></h1>
+        <p class="hero-desc">Ruang selamat untuk berkongsi luahan hati, petikan semangat dan pandangan fikiran — tanpa nama, tanpa risiko.</p>
+        <button class="hero-cta" onclick="openPostModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+          Kongsi Cerita Anda
+        </button>
+        <div class="hero-stats">
+          <div class="stat-pill">🔒 100% Anonim</div>
+          <div class="stat-pill">💬 Komuniti Positif</div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="phone-mockup">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="screen-header">
+                <div class="screen-dot red"></div>
+                <div class="screen-dot gold"></div>
+                <div class="screen-dot green"></div>
+              </div>
+              <div class="screen-card c1">
+                <div class="sc-avatar"></div>
+                <div class="sc-lines">
+                  <div class="sc-line w80"></div>
+                  <div class="sc-line w60"></div>
+                </div>
+              </div>
+              <div class="screen-card c2">
+                <div class="sc-avatar a2"></div>
+                <div class="sc-lines">
+                  <div class="sc-line w70"></div>
+                  <div class="sc-line w50"></div>
+                </div>
+              </div>
+              <div class="screen-card c3">
+                <div class="sc-avatar a3"></div>
+                <div class="sc-lines">
+                  <div class="sc-line w90"></div>
+                  <div class="sc-line w40"></div>
+                </div>
+              </div>
+              <div class="screen-input-bar">
+                <div class="sib-inner">
+                  <span>Tulis cerita anda...</span>
+                  <div class="sib-btn">✦</div>
+                </div>
+              </div>
+              <div class="floating-media">
+                <div class="media-icon mic">🎙️</div>
+                <div class="media-icon img">🖼️</div>
+                <div class="media-icon vid">🎥</div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-glow"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MAIN CONTENT -->
+<!-- ═══════════════════════════════════════ -->
+<div class="wrapper main-content">
+
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel">
+    <div class="admin-header">
+        <h3>🛠️ Admin Dashboard</h3>
+        <button onclick="logoutAdmin()" class="btn-admin-logout">LOGOUT</button>
+    </div>
+    <div class="admin-stats">
+        <div class="stat-box"><b id="statTotal">0</b><small>Jumlah Post</small></div>
+        <div class="stat-box"><b id="statActive">0</b><small>User Aktif</small></div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer-bar">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/><path d="M12 8V12M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span id="adminStatus">Kami menghormati privasi anda. Semua cerita adalah tidak dikenali. Ruang ini milik anda — cerita saja apa yang terbuku di hati!</span>
+  </div>
+
+  <!-- TRENDING -->
+  <div class="trending-card">
+    <div class="trending-title">
+      <span class="fire-icon">🔥</span> Trending Hari Ini
+    </div>
+    <div id="trendingList"></div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-container">
+    <button class="filter-btn active" onclick="filterPosts('Semua')">Semua</button>
+    <button class="filter-btn" onclick="filterPosts('Cerita & Luahan')">💜 Cerita</button>
+    <button class="filter-btn" onclick="filterPosts('Petikan Semangat')">🔥 Semangat</button>
+    <button class="filter-btn" onclick="filterPosts('Pendapat Fikiran')">💡 Fikiran</button>
+    <button class="filter-btn" onclick="filterPosts('Umum & Lain-Lain')">🌐 Lain-Lain</button>
+  </div>
+
+  <!-- POST LIST -->
+  <div id="postList"></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOATING BUTTON -->
+<!-- ═══════════════════════════════════════ -->
+<button class="fab-btn" onclick="openPostModal()">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+</button>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODAL: POST FORM -->
+<!-- ═══════════════════════════════════════ -->
+<div id="postModal" class="modal">
+  <div class="modal-content modal-form">
+    <div class="modal-drag-bar"></div>
+    <div class="modal-form-header">
+      <div>
+        <h2 class="modal-form-title" id="formModalTitle">Kongsi Cerita Anda</h2>
+        <p class="modal-form-sub">Tanpa nama. Tanpa risiko. Cerita sahaja.</p>
+      </div>
+      <button class="modal-close-btn" onclick="closePostModal()">✕</button>
+    </div>
+
+    <!-- NICKNAME -->
+    <div class="form-group">
+      <label class="form-label">Nama Samaran</label>
+      <input id="nickname" class="form-input" placeholder="cth: Hati Emas, Jiwa Kuat...">
+    </div>
+
+    <!-- AVATAR PICKER -->
+    <div class="form-group">
+      <label class="form-label">Pilih Avatar Anda</label>
+      <div class="avatar-grid" id="avatarGrid"></div>
+      <input type="hidden" id="selectedAvatar">
+      <input type="hidden" id="gender" value="male">
+    </div>
+
+    <!-- CATEGORY -->
+    <div class="form-group">
+      <label class="form-label">Kategori</label>
+      <select id="category" class="form-input form-select">
+        <option value="Cerita & Luahan">💜 Cerita & Luahan</option>
+        <option value="Petikan Semangat">🔥 Petikan Semangat</option>
+        <option value="Pendapat Fikiran">💡 Pendapat Fikiran</option>
+        <option value="Umum & Lain-Lain">🌐 Umum & Lain-Lain</option>
+      </select>
+    </div>
+
+    <!-- MESSAGE -->
+    <div class="form-group">
+      <label class="form-label">Cerita Anda</label>
+      <textarea id="message" class="form-input form-textarea" placeholder="Tulis apa yang terbuku di hati... Anda selamat di sini."></textarea>
+      <div class="char-count-row">
+        <span id="charCount">0 / 500</span>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="btnSubmitMain" onclick="submitPost()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Hantar Kad
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODAL: SHARE -->
+<!-- ═══════════════════════════════════════ -->
+<div id="shareModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-drag-bar"></div>
+    <h2 class="modal-share-title">Kongsi Cerita</h2>
+    <p class="modal-share-sub">Jemput rakan beri maklum balas di kad anda</p>
+    <div class="modal-grid">
+        <button class="btn-wa" id="waBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          WhatsApp
+        </button>
+        <button class="btn-fb" id="fbBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </button>
+    </div>
+    <button class="btn-link" id="linkBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Salin Pautan
+    </button>
+    <button class="btn-close" onclick="closeModal()">Tutup</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
