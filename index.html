@@ -370,19 +370,19 @@ textarea{min-height:200px;resize:vertical;}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-const MALE_AVATARS=[
-  "https://blogger.googleusercontent.com/img/a/AVvXsEisxFUY3DCUWZWT5PFfEGhFrHPpys_emuzKMhEZmo1tz6OSop8X7oHewP0U93lolkwoHxBPmHDw29HTEE2cJdNOAR1mU41eKswgx7QxC108HY2trycCmEOj81AJ-dLZ2CwLjF19JPuJKB_Mx1VqAw9-ht7-9SEQmr5LnbTUYuxdj5UAc9nGCUoRrfyoy8US=s16000",
-  "https://blogger.googleusercontent.com/img/a/AVvXsEi_i-pVqsNBuZc3wJNujXKiC8k09tqo8hsubitwvVi-M7vG1lzzjTf2Y5Asi8ZTLgEDxf3aRzGSRLDrU6tsCA1QfzgBIwYYX1P8WTvMvH2nmX1rI7WZLm-MvKwYBD92GgN_dmyqQRGI4QoAw_JyTba6c1p0cwsg5mmiw92U-rHkzyhKFTL9wJYgLcAv11bH=s16000",
-  "https://blogger.googleusercontent.com/img/a/AVvXsEiShb8oZ_0M-8TJDJnjTmJeKYVMHN615pdqYfaA1qPzENzt8wR0FMrRSsU2Y_G6CowW0NAeIT9VEoLTWMj5TiTmHZ0-_pbftpB-_Pyn4ZKWbmobQYoBWxDckRo8PNLI9uzTw98LqtOBtOqfN2VSB5MHVY7NAjJFTIfVdYamQmHU3crkVi8spaS4F0JFRN9m=s16000",
-  "https://blogger.googleusercontent.com/img/a/AVvXsEhgd4NSy6E64P31IahJnQf46dkA1wVPvQ-8gakDAsA2iuVV722YaJriH5G7r9PeQPK5GtV43oWXubo-Kq3RP_NDnCneBcUDd54Mc_aYx3hyWTeJKl1A99KOdcoXo12iJYJhSSc22tbf8acPJXHNwe4K2DoWOMdCMhrCEbhVHU-Yz4eVKpcqmPmlbdUNM_U0=s16000",
-  "https://blogger.googleusercontent.com/img/a/AVvXsEjtxVShAhbMloAWr-qEUOA2nADLMUfd5C01v6lpWwBcTW4yX1inGbOBv2hqySSMqhd6O866yHzP051YFmMUpA76uJIy6HZj36fXJ2uSi5cODdF4nooXnTrfvfcImuFnttOfMW3LBNPc53Rce3ndBargO8K41R-FmuYw86OWITwrmSjAJSmosMGmczpuolfR=s16000"
+const MALE_AVATARS = [
+  "https://raw.githubusercontent.com/kad-cerita/kad-cerita-assets/main/avatar-m1.jpg",
+  "https://raw.githubusercontent.com/kad-cerita/kad-cerita-assets/main/avatar-m2.jpg",
+  "https://raw.githubusercontent.com/kad-cerita/kad-cerita-assets/main/avatar-m3.jpg",
+  "https://raw.githubusercontent.com/kad-cerita/kad-cerita-assets/main/avatar-m4.jpg",
+  "https://raw.githubusercontent.com/kad-cerita/kad-cerita-assets/main/avatar-m5.jpg",
 ];
-const FEMALE_AVATARS=[
-  "https://blogger.googleusercontent.com/img/a/AVvXsEj3UQMjdrr1TwGWkUs-cZciQspP1KsqXlZJdDiqnbg1BP7SlXQ0tTP_dVWSIgs5OuGB8pAoAomywkKJMJYd7RRf87BAdsx8nmMp4SAYJEOekpoelHko4srnmEEQbIVYB8hFjw0kCUvq95czViaEh2nXZFs0fL4ITBIdhJL7FPRydsAYQXq2K2HTgB0Cb5j_=s16000",
-  "https://blogger.googleusercontent.com/img/a/AVvXsEiUagKpIDD49Oo8UjPxZqb0awOgcmT7nHyXfUg5X704dl7lWC6eBDi3ibuuvgKlF8nyhCvurZSk8Aeo0FylR0EyP07uVKZ5sASRZ4hjVcurKZdQqjMjJnh2h8j5D2_7TSfXLyZ0yMiWDfmA8Czt8dUts5_W0ddG-lR8jzRzP0fHTZhWserpIkCByN6mVRFF=s16000",
-  "https://blogger.googleusercontent.com/img/a/AVvXsEiON2iLPVdhEY24KdCWNmStc_XzZjlmwhvjvPvlyrB6HhTa99idT4vhbS3xpOa9_W3MocFsQ98R3hYreyC4yXmX17fCCFUXMOJt_NF5ITwKvv1l4L7J5_GN0GhDfxAA-qeEGI7oycZ7H6Me8LAbjLfgxlvTmiTIl7r9dg6SB7ADIroJZNuFwSytK18VKU_G=s16000",
-  "https://blogger.googleusercontent.com/img/a/AVvXsEhepVichphAQ1H1GB6IwmK54N_DAzwL8UDC5Lswzr4dRjc4n4RhMnvqwOMx5F2sbx3U7qkq5LjYPgfyIYpgm-Rb1xGnClLjFEi4QESaX-wVGTwMg7RQQ8vA-r6Wsgrfyq-F3BcXUNlbOOqjSyvJsPsnMGqbQyr1CscdAHaV9CHJicQ3AX54PPfY52FqfcmJ=s16000",
-  "https://blogger.googleusercontent.com/img/a/AVvXsEi5AK-YXv-3s5iOFlrXWnwzO2tUsFtfiKOJkQkTzX3lhpSVKTgwXBM6T3QNOiqX4UDqpkJcTQcmY-fniba6v2pCaSnQpCscdxpOJMJECTSruE7QVXBjN8jaLhUceCQkWD-XmNPAz-ZL2EO4dO6BUa7fRTjZa5al3lOvLWKNNno0LLjS6KBDZff3r82iSPcl=s16000"
+const FEMALE_AVATARS = [
+  "https://raw.githubusercontent.com/kad-cerita/kad-cerita-assets/main/avatar-f1.jpg",
+  "https://raw.githubusercontent.com/kad-cerita/kad-cerita-assets/main/avatar-f2.jpg",
+  "https://raw.githubusercontent.com/kad-cerita/kad-cerita-assets/main/avatar-f3.jpg",
+  "https://raw.githubusercontent.com/kad-cerita/kad-cerita-assets/main/avatar-f4.jpg",
+  "https://raw.githubusercontent.com/kad-cerita/kad-cerita-assets/main/avatar-f5.jpg",
 ];
 
 const firebaseConfig={apiKey:"AIzaSyD3oDoLojt_bV9_U_Tut3tPmw29TKH--cw",authDomain:"kad-cerita.firebaseapp.com",projectId:"kad-cerita",storageBucket:"kad-cerita.firebasestorage.app",messagingSenderId:"424105827664",appId:"1:424105827664:web:bca4964ff4265bf80b6055",measurementId:"G-YLJ19YEMRX",databaseURL:"https://kad-cerita-default-rtdb.asia-southeast1.firebasedatabase.app"};
