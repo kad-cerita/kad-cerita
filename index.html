@@ -600,18 +600,44 @@ function saveKadAsImage(key, name, text, category, avatarUrl, time) {
 
   const avatarSize = 68;
   const avatarY = y;
+
+  function drawAvatarInitials() {
+    // Gradient background circle
+    const initials = name.trim().split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase() || '?';
+    const avGrad = ctx.createLinearGradient(PADDING, avatarY, PADDING+avatarSize, avatarY+avatarSize);
+    avGrad.addColorStop(0, cat.color);
+    avGrad.addColorStop(1, '#0a0f1e');
+    ctx.fillStyle = avGrad;
+    roundRect(ctx, PADDING, avatarY, avatarSize, avatarSize, 18); ctx.fill();
+    // Border
+    ctx.strokeStyle = 'rgba(201,168,76,0.5)'; ctx.lineWidth = 2.5;
+    roundRect(ctx, PADDING, avatarY, avatarSize, avatarSize, 18); ctx.stroke();
+    // Initials text
+    ctx.font = 'bold ' + (initials.length > 1 ? '24' : '28') + 'px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(initials, PADDING + avatarSize/2, avatarY + avatarSize/2);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    drawRest();
+  }
+
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = function() {
-    ctx.save();
-    roundRect(ctx, PADDING, avatarY, avatarSize, avatarSize, 18); ctx.clip();
-    ctx.drawImage(img, PADDING, avatarY, avatarSize, avatarSize);
-    ctx.restore();
-    ctx.strokeStyle = 'rgba(201,168,76,0.4)'; ctx.lineWidth = 2.5;
-    roundRect(ctx, PADDING, avatarY, avatarSize, avatarSize, 18); ctx.stroke();
-    drawRest();
+    try {
+      ctx.save();
+      roundRect(ctx, PADDING, avatarY, avatarSize, avatarSize, 18); ctx.clip();
+      ctx.drawImage(img, PADDING, avatarY, avatarSize, avatarSize);
+      ctx.restore();
+      ctx.strokeStyle = 'rgba(201,168,76,0.4)'; ctx.lineWidth = 2.5;
+      roundRect(ctx, PADDING, avatarY, avatarSize, avatarSize, 18); ctx.stroke();
+      drawRest();
+    } catch(e) { drawAvatarInitials(); }
   };
-  img.onerror = drawRest;
+  img.onerror = drawAvatarInitials;
+  // Try loading via proxy to bypass CORS, fallback to initials
   img.src = avatarUrl;
 
   function drawRest() {
