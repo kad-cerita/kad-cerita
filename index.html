@@ -142,6 +142,7 @@ body{padding-top:62px;}
 .action-btn.active-love{background:#fff1f2;color:#e11d48;border-color:#ffe4e6;}
 .action-btn.active-sad{background:#eff6ff;color:#2563eb;border-color:#dbeafe;}
 .action-btn.active-laugh{background:#fffbeb;color:#d97706;border-color:#fef3c7;}
+.btn-save-img{background:linear-gradient(135deg,#1e293b,#334155);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(10,15,30,.15);}
 .btn-share-main{margin-left:auto;background:var(--primary);color:white;border-color:var(--primary);box-shadow:0 4px 12px rgba(10,15,30,.15);}
 .notif-dot{position:absolute;top:-3px;right:-3px;width:9px;height:9px;background:#ef4444;border-radius:50%;border:2px solid white;}
 /* reply */
@@ -215,8 +216,8 @@ textarea{min-height:200px;resize:vertical;}
     </div>
   </div>
   <div class="support-btn-wrapper">
-    <div class="coffee-bubble" id="coffeeBubble">Anda ada masalah ini?</div>
-    <a href="https://pg2u.my/wanhasbullah/kelebihan" class="coffee-btn" target="_blank" title="Sokong Kami">
+    <div class="coffee-bubble" id="coffeeBubble">Suka web ini? ❤️</div>
+    <a href="https://pg2u.my/wanhasbullah" class="coffee-btn" target="_blank" title="Sokong Kami">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path class="steam steam-1" d="M9 4C9 4 7.5 5.5 9 7C10.5 8.5 9 10 9 10" fill="none" />
         <path class="steam steam-2" d="M13 3C13 3 11.5 4.5 13 6C14.5 7.5 13 9 13 9" fill="none" />
@@ -503,6 +504,7 @@ function loadPosts(){
           <button class="action-btn ${localStorage.getItem('react_sad_'+p.key)?'active-sad':''}" onclick="toggleReaction('${p.key}','sad')">😢 <span>${p.sad||0}</span></button>
           <button class="action-btn ${localStorage.getItem('react_laugh_'+p.key)?'active-laugh':''}" onclick="toggleReaction('${p.key}','laugh')">😆 <span>${p.laugh||0}</span></button>
           <button class="action-btn" onclick="toggleReply('${p.key}',${p.replyCount||0})">💬 <span>${p.replyCount||0}</span>${hasNew?'<span class="notif-dot"></span>':''}</button>
+          <button class="action-btn btn-save-img" onclick="saveKadAsImage('${p.key}','${p.name}','${p.text.replace(/'/g,"\\'").replace(/\n/g,"\\n")}','${p.category}','${p.avatar}',${p.time})">💾 Simpan</button>
           <button class="action-btn btn-share-main" onclick="openShare('${p.key}','${p.name}','${p.text.replace(/'/g,"\\'").replace(/\n/g," ")}')">Kongsi</button>
         </div>
         <div id="replySection_${p.key}" class="reply-section">
@@ -539,6 +541,139 @@ function openShare(key,name,text){
 }
 function closeModal(){document.getElementById("shareModal").style.display="none";}
 function deletePost(k){if(confirm("Padam post ini secara kekal?"))db.ref("posts/"+k).remove();}
+
+// ── SIMPAN KAD SEBAGAI IMEJ (Canvas) ──
+function saveKadAsImage(key, name, text, category, avatarUrl, time) {
+  showToast("⏳ Sedang menjana imej...");
+  const rawText = text.replace(/\\n/g, '\n');
+  const pd = new Date(time);
+  const fDate = pd.toLocaleDateString('ms-MY', {day:'2-digit', month:'2-digit', year:'numeric'});
+  const fTime = pd.toLocaleTimeString('ms-MY', {hour:'2-digit', minute:'2-digit', hour12:true}).toUpperCase();
+  const dateStr = fDate + ' \u2022 ' + fTime;
+
+  const catConfig = {
+    "Cerita & Luahan":   {icon:"\uD83D\uDCD6", color:"#0ea5e9", bg:"rgba(14,165,233,0.12)", label:"CERITA & LUAHAN"},
+    "Petikan Semangat":  {icon:"\uD83D\uDD25", color:"#c9a84c", bg:"rgba(201,168,76,0.15)",  label:"PETIKAN SEMANGAT"},
+    "Pendapat Fikiran":  {icon:"\uD83D\uDCA1", color:"#10b981", bg:"rgba(16,185,129,0.12)",  label:"PENDAPAT FIKIRAN"},
+    "Umum & Lain-Lain":  {icon:"\uD83C\uDF10", color:"#8b5cf6", bg:"rgba(139,92,246,0.12)", label:"UMUM & LAIN-LAIN"},
+  };
+  const cat = catConfig[category] || {icon:"\uD83D\uDCDD", color:"#c9a84c", bg:"rgba(201,168,76,0.12)", label: category.toUpperCase()};
+
+  const W = 900, PADDING = 56;
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = W;
+  canvas.height = 100;
+  ctx.font = '500 32px sans-serif';
+  const maxW = W - PADDING * 2;
+  const lines = wrapText(ctx, rawText, maxW);
+  const lineH = 46;
+  const textBlockH = lines.length * lineH;
+  const H = PADDING + 44 + 24 + 68 + 28 + textBlockH + 36 + 1 + 40 + 56;
+  canvas.height = H;
+
+  const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+  bgGrad.addColorStop(0, '#0d1526');
+  bgGrad.addColorStop(1, '#131929');
+  ctx.fillStyle = bgGrad;
+  roundRect(ctx, 0, 0, W, H, 32); ctx.fill();
+
+  const glow = ctx.createRadialGradient(W, 0, 0, W, 0, 320);
+  glow.addColorStop(0, 'rgba(201,168,76,0.12)');
+  glow.addColorStop(1, 'transparent');
+  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = cat.color;
+  roundRect(ctx, 0, 32, 5, H - 64, 4); ctx.fill();
+
+  let y = PADDING;
+
+  ctx.font = '800 21px sans-serif';
+  const tagLabel = cat.icon + '  ' + cat.label;
+  const tagW = ctx.measureText(tagLabel).width + 40;
+  ctx.fillStyle = cat.bg;
+  roundRect(ctx, PADDING, y, tagW, 44, 12); ctx.fill();
+  ctx.fillStyle = cat.color;
+  ctx.fillText(tagLabel, PADDING + 20, y + 30);
+  y += 44 + 24;
+
+  const avatarSize = 68;
+  const avatarY = y;
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function() {
+    ctx.save();
+    roundRect(ctx, PADDING, avatarY, avatarSize, avatarSize, 18); ctx.clip();
+    ctx.drawImage(img, PADDING, avatarY, avatarSize, avatarSize);
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(201,168,76,0.4)'; ctx.lineWidth = 2.5;
+    roundRect(ctx, PADDING, avatarY, avatarSize, avatarSize, 18); ctx.stroke();
+    drawRest();
+  };
+  img.onerror = drawRest;
+  img.src = avatarUrl;
+
+  function drawRest() {
+    let cy = avatarY;
+    ctx.font = '700 30px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(name, PADDING + avatarSize + 20, cy + 28);
+    ctx.font = '500 22px sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.fillText(dateStr, PADDING + avatarSize + 20, cy + 58);
+    cy += avatarSize + 28;
+
+    ctx.font = '500 32px sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.88)';
+    lines.forEach(line => { ctx.fillText(line, PADDING, cy); cy += lineH; });
+    cy += 36;
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(PADDING, cy); ctx.lineTo(W - PADDING, cy); ctx.stroke();
+    cy += 36;
+
+    ctx.font = '700 22px sans-serif';
+    ctx.fillStyle = 'rgba(201,168,76,0.75)';
+    ctx.fillText('\uD83D\uDCDC kad-cerita.pages.dev', PADDING, cy + 4);
+    ctx.font = '600 20px sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    const rLabel = 'Platform Anonim';
+    ctx.fillText(rLabel, W - PADDING - ctx.measureText(rLabel).width, cy + 4);
+
+    const link = document.createElement('a');
+    link.download = 'kad-cerita-' + key + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast("\u2705 Imej berjaya disimpan!");
+  }
+}
+
+function wrapText(ctx, text, maxWidth) {
+  const paragraphs = text.split('\n');
+  const result = [];
+  paragraphs.forEach(para => {
+    if (!para.trim()) { result.push(''); return; }
+    const words = para.split(' '); let line = '';
+    words.forEach(word => {
+      const test = line ? line + ' ' + word : word;
+      if (ctx.measureText(test).width > maxWidth && line) { result.push(line); line = word; }
+      else { line = test; }
+    });
+    if (line) result.push(line);
+  });
+  if (result.length > 10) { result.splice(10); result[9] += '\u2026'; }
+  return result;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
 
 checkAdminStatus();
 loadPosts();
