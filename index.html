@@ -660,7 +660,7 @@ function openShare(key,name,text){
   const shareText=`"${shortText}"\n\nKad Cerita ${name}. Cerita penuh di sini:`;
   document.getElementById("waBtn").onclick=()=>window.open(`https://wa.me/?text=${encodeURIComponent(shareText+"\n"+shareUrl)}`,'_blank');
   document.getElementById("fbBtn").onclick=()=>window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,'_blank');
-  document.getElementById("linkBtn").onclick=()=>navigator.clipboard.writeText("Berikan reaksi & komentar di kad saya :\n"+shareUrl).then(()=>{showToast("📋 Pautan telah disalin!");closeModal();});
+  document.getElementById("linkBtn").onclick=()=>navigator.clipboard.writeText("Berikan reaksi & komentar di kad ini :\n"+shareUrl).then(()=>{showToast("📋 Pautan telah disalin!");closeModal();});
   document.getElementById("shareModal").style.display="flex";
 }
 function closeModal(){document.getElementById("shareModal").style.display="none";}
